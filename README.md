@@ -132,7 +132,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ## 👥 Autores
 
-- **Desarrollo inicial** - Sistema de gestión para centro educativo
+- **Jose Bedmar** - Desarrollador inicial - [GitHub](https://github.com/jbedmar)
 
 ## 🙏 Agradecimientos
 
