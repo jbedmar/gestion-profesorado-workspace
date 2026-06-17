@@ -23,13 +23,14 @@ Herramienta de administración de profesorado y grupos para centros educativos c
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/TU_USUARIO/gestion-profesorado-workspace.git
+   git clone https://github.com/jbedmar/gestion-profesorado-workspace.git
    cd gestion-profesorado-workspace
    ```
 
 2. **Crear hoja de cálculo**
    - Crea una nueva hoja en Google Sheets
-   - Copia el contenido de los archivos `.js` y `.html` al editor de Apps Script
+   - Importa las plantillas CSV (ver [PLANTILLAS.md](PLANTILLAS.md))
+   - O copia el contenido de los archivos `.js` y `.html` al editor de Apps Script
 
 3. **Configurar dominio**
    - Edita `Codigo.js` y establece tu dominio:
@@ -60,6 +61,9 @@ Herramienta de administración de profesorado y grupos para centros educativos c
 ├── UI_GestionarGrupos.html      # Panel de gestión de grupos
 ├── UI_GestionarMiembros.html    # Panel de gestión de miembros
 ├── appsscript.json              # Configuración de Apps Script
+├── plantilla_profesores.csv     # Plantilla CSV para pestaña "Profesores"
+├── plantilla_grupos.csv         # Plantilla CSV para pestaña "Grupos"
+├── PLANTILLAS.md                # Instrucciones para usar las plantillas
 └── Instrucciones.md             # Guía detallada de instalación
 ```
 
