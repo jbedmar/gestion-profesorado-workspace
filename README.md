@@ -2,7 +2,7 @@
 
 Herramienta de administración de profesorado y grupos para centros educativos con Google Workspace for Education.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.)
 
 ## 📋 Características
 
@@ -128,7 +128,18 @@ Consulta `Instrucciones.md` para una guía detallada de instalación y uso.
 
 ## 📝 Licencia
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+Este proyecto está bajo la licencia **MIT con restricción de uso comercial** - ver el archivo [LICENSE](LICENSE) para detalles.
+
+**Permitido:**
+- ✅ Uso personal
+- ✅ Uso educativo
+- ✅ Uso en organizaciones sin fines de lucro
+- ✅ Investigación académica
+
+**Prohibido:**
+- ❌ Uso comercial
+- ❌ Venta del software o trabajos derivados
+- ❌ Uso en productos o servicios comerciales
 
 ## 👥 Autores
 
