@@ -1,0 +1,14 @@
+{
+  "name": "gestion-profesorado-workspace",
+  "version": "1.0.0",
+  "description": "Herramienta de gestión de profesorado para Google Workspace Education",
+  "scripts": {
+    "push": "clasp push",
+    "pull": "clasp pull",
+    "open": "clasp open",
+    "logs": "clasp logs",
+    "status": "clasp status"
+  },
+  "keywords": ["google-workspace", "apps-script", "education", "admin-sdk"],
+  "license": "MIT"
+}

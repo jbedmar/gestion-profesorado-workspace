@@ -1,0 +1,13 @@
+**/node_modules/**
+**/.git/**
+Instrucciones.md
+contexto.md
+*.xlsx
+*.gsheet
+.clasp.json
+.claspignore
+package.json
+package-lock.json
+clasp.bat
+datos.txt
+implementation_plan.md

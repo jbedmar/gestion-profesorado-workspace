@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# clasp config (contains script ID)
+.clasp.json
+
+# Environment variables
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build
+dist/
+build/

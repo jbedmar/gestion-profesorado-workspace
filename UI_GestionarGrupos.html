@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gestionar Grupos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #172554;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent-create: #10b981;
+      --accent-delete: #ef4444;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    h3 { margin-top: 0; font-weight: 600; color: var(--primary); }
+
+    .banner {
+      background-color: #fef9c3;
+      border: 1px solid #fef08a;
+      color: #713f12;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 0;
+    }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .grupo-cambios {
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .grupo-header {
+      padding: 12px 16px;
+      font-weight: 600;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .grupo-header.crear { background-color: var(--accent-create); }
+    .grupo-header.eliminar { background-color: var(--accent-delete); }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+
+    .item-usuario {
+      display: flex;
+      align-items: flex-start;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .item-usuario:last-child { border-bottom: none; }
+    .item-usuario:hover { background-color: #f8fafc; }
+    .chk-container { margin-top: 3px; }
+    .chk-container input { cursor: pointer; width: 16px; height: 16px; accent-color: var(--primary); }
+
+    .user-info { flex: 1; }
+    .user-name { font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .user-email { font-family: monospace; font-size: 12px; color: var(--text-muted); word-break: break-all; }
+    .user-dept { font-size: 11px; color: var(--primary); margin-top: 4px; background-color: #eff6ff; display: inline-block; padding: 1px 6px; border-radius: 4px; }
+
+    .control-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .safety-label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .txt-seguridad {
+      width: 100%; box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .txt-seguridad:focus { border-color: var(--primary); }
+
+    .btn-ejecutar {
+      width: 100%; padding: 12px;
+      background-color: var(--primary);
+      color: white; border: none;
+      border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, opacity 0.2s;
+    }
+
+    .btn-ejecutar:hover:not(:disabled) { background-color: var(--primary-hover); }
+    .btn-ejecutar:disabled { opacity: 0.5; cursor: not-allowed; background-color: #94a3b8; }
+
+    .result-card {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      padding: 16px;
+      border-radius: 10px;
+      margin-top: 16px;
+    }
+
+    .result-title { font-weight: 700; margin-bottom: 8px; }
+    .result-list { margin: 8px 0 0 0; padding-left: 20px; font-size: 13px; }
+
+    .error-card {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 16px;
+      border-radius: 10px;
+      margin-top: 16px;
+    }
+
+    .info-box {
+      background-color: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <div id="sim-banner" class="banner" style="display: none;">
+      <span>⚠️</span>
+      <span>MODO SIMULACIÓN ACTIVO (No se aplicarán cambios reales).</span>
+    </div>
+
+    <h3>🔄 Gestionar Grupos</h3>
+    
+    <div class="info-box">
+      Crea o elimina grupos en Google Workspace según lo definido en la hoja <b>"Grupos"</b>.
+    </div>
+    
+    <div id="loading" class="loading-container">
+      <div class="spinner"></div>
+      <div style="color: var(--text-muted);">Comparando grupos con Workspace...</div>
+    </div>
+
+    <div id="sin-cambios" style="display: none; text-align: center; padding: 40px 0;">
+      <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
+      <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">Grupos Sincronizados</div>
+      <div style="color: var(--text-muted); font-size: 13px;">Todos los grupos de la hoja ya existen en Workspace.</div>
+    </div>
+
+    <div id="error-state" style="display: none; text-align: center; padding: 30px 16px;">
+      <div style="font-size: 48px; margin-bottom: 12px;">❌</div>
+      <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #B91C1C;">Error</div>
+      <div id="error-message" style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px; word-break: break-word;"></div>
+      <button class="btn-ejecutar" style="background-color: var(--primary);" onclick="recargarDatos()">Reintentar</button>
+    </div>
+
+    <div id="lista-cambios" style="display: none;">
+      
+      <div id="grupo-crear" class="grupo-cambios" style="display: none;">
+        <div class="grupo-header crear">
+          <span>Crear Grupos</span>
+          <span id="badge-crear" class="badge">0</span>
+        </div>
+        <div id="items-crear"></div>
+      </div>
+
+      <div id="grupo-eliminar" class="grupo-cambios" style="display: none;">
+        <div class="grupo-header eliminar">
+          <span>Eliminar Grupos</span>
+          <span id="badge-eliminar" class="badge">0</span>
+        </div>
+        <div id="items-eliminar"></div>
+      </div>
+
+      <div class="control-panel">
+        <label class="safety-label">Para continuar, escribe CONFIRMAR:</label>
+        <input type="text" id="input-seguridad" class="txt-seguridad" placeholder="Escribe CONFIRMAR en mayúsculas" oninput="validarFormulario()">
+        
+        <button id="btn-ejecutar" class="btn-ejecutar" disabled onclick="procesarCambios()">
+          Aplicar Cambios Aprobados
+        </button>
+      </div>
+    </div>
+
+    <div id="running" class="loading-container" style="display: none;">
+      <div class="spinner"></div>
+      <div style="color: var(--text-muted); font-weight: 600;">Gestionando grupos en Google Workspace...</div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Por favor, no cierres este panel.</div>
+    </div>
+
+    <div id="finished" style="display: none;">
+      <div class="result-card">
+        <div class="result-title">Operación Completada</div>
+        <div id="result-summary"></div>
+        <ul id="result-errors" class="result-list" style="color: #B91C1C; display: none;"></ul>
+      </div>
+      <button class="btn-ejecutar" style="margin-top: 16px; background-color: var(--primary);" onclick="recargarDatos()">
+        Listo / Sincronizar de nuevo
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    var datosSincronizacion = null;
+
+    document.addEventListener("DOMContentLoaded", function() {
+      recargarDatos();
+    });
+
+    function recargarDatos() {
+      document.getElementById("loading").style.display = "flex";
+      document.getElementById("lista-cambios").style.display = "none";
+      document.getElementById("sin-cambios").style.display = "none";
+      document.getElementById("error-state").style.display = "none";
+      document.getElementById("running").style.display = "none";
+      document.getElementById("finished").style.display = "none";
+      document.getElementById("input-seguridad").value = "";
+      document.getElementById("btn-ejecutar").disabled = true;
+
+      google.script.run
+        .withSuccessHandler(onDatosCargados)
+        .withFailureHandler(onDatosError)
+        .obtenerEstadoGruposBridge();
+    }
+
+    function onDatosCargados(resultadoJSON) {
+      var resultado = JSON.parse(resultadoJSON);
+      document.getElementById("loading").style.display = "none";
+      
+      if (resultado.error) {
+        document.getElementById("error-message").innerText = resultado.error;
+        document.getElementById("error-state").style.display = "block";
+        return;
+      }
+
+      datosSincronizacion = resultado;
+
+      var tieneCrear = resultado.crearGrupo && resultado.crearGrupo.length > 0;
+      var tieneEliminar = resultado.eliminarGrupo && resultado.eliminarGrupo.length > 0;
+
+      if (!tieneCrear && !tieneEliminar) {
+        document.getElementById("sin-cambios").style.display = "block";
+        return;
+      }
+
+      document.getElementById("lista-cambios").style.display = "block";
+
+      // Renderizar Crear Grupos
+      var containerCrear = document.getElementById("items-crear");
+      containerCrear.innerHTML = "";
+      if (tieneCrear) {
+        document.getElementById("grupo-crear").style.display = "block";
+        document.getElementById("badge-crear").innerText = resultado.crearGrupo.length;
+        resultado.crearGrupo.forEach(function(item, idx) {
+          containerCrear.appendChild(crearItemHTML("crear", idx, item.nombre, item.email, item.razon));
+        });
+      }
+
+      // Renderizar Eliminar Grupos
+      var containerEliminar = document.getElementById("items-eliminar");
+      containerEliminar.innerHTML = "";
+      if (tieneEliminar) {
+        document.getElementById("grupo-eliminar").style.display = "block";
+        document.getElementById("badge-eliminar").innerText = resultado.eliminarGrupo.length;
+        resultado.eliminarGrupo.forEach(function(item, idx) {
+          containerEliminar.appendChild(crearItemHTML("eliminar", idx, item.nombre, item.email, item.razon));
+        });
+      }
+
+      validarFormulario();
+    }
+
+    function onDatosError(err) {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("error-message").innerText = err.message || "Error desconocido.";
+      document.getElementById("error-state").style.display = "block";
+    }
+
+    function crearItemHTML(tipo, index, nombre, email, razon) {
+      var div = document.createElement("div");
+      div.className = "item-usuario";
+      
+      var chkContainer = document.createElement("div");
+      chkContainer.className = "chk-container";
+      
+      var chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.checked = true;
+      chk.id = "chk-" + tipo + "-" + index;
+      chk.setAttribute("data-tipo", tipo);
+      chk.setAttribute("data-index", index);
+      chk.onchange = validarFormulario;
+      
+      chkContainer.appendChild(chk);
+      
+      var info = document.createElement("div");
+      info.className = "user-info";
+      info.innerHTML = 
+        '<div class="user-name">' + nombre + '</div>' +
+        '<div class="user-email">' + email + '</div>' +
+        '<div class="user-dept">' + razon + '</div>';
+        
+      div.appendChild(chkContainer);
+      div.appendChild(info);
+      
+      return div;
+    }
+
+    function validarFormulario() {
+      var chks = document.querySelectorAll("input[type='checkbox']:checked");
+      var textSeguridad = document.getElementById("input-seguridad").value;
+      var btn = document.getElementById("btn-ejecutar");
+      
+      if (chks.length > 0 && textSeguridad.trim() === "CONFIRMAR") {
+        btn.disabled = false;
+      } else {
+        btn.disabled = true;
+      }
+    }
+
+    function procesarCambios() {
+      var cambiosAAplicar = {
+        crearGrupo: [],
+        eliminarGrupo: []
+      };
+
+      var chks = document.querySelectorAll("input[type='checkbox']:checked");
+      chks.forEach(function(chk) {
+        var tipo = chk.getAttribute("data-tipo");
+        var idx = parseInt(chk.getAttribute("data-index"));
+        
+        if (tipo === "crear" && datosSincronizacion.crearGrupo) {
+          cambiosAAplicar.crearGrupo.push(datosSincronizacion.crearGrupo[idx]);
+        } else if (tipo === "eliminar" && datosSincronizacion.eliminarGrupo) {
+          cambiosAAplicar.eliminarGrupo.push(datosSincronizacion.eliminarGrupo[idx]);
+        }
+      });
+
+      document.getElementById("lista-cambios").style.display = "none";
+      document.getElementById("running").style.display = "flex";
+
+      google.script.run
+        .withSuccessHandler(onSincronizacionFinalizada)
+        .withFailureHandler(onSincronizacionError)
+        .aplicarCambiosGruposBridge(JSON.stringify(cambiosAAplicar));
+    }
+
+    function onSincronizacionFinalizada(resultadoJSON) {
+      var res = JSON.parse(resultadoJSON);
+      document.getElementById("running").style.display = "none";
+      document.getElementById("finished").style.display = "block";
+
+      if (res.modoSimulacion) {
+        document.getElementById("sim-banner").style.display = "flex";
+      }
+
+      var resumen = 
+        "Se han procesado las siguientes solicitudes:<ul>" +
+        "<li><b>Grupos creados:</b> " + res.gruposCreados + "</li>" +
+        "<li><b>Grupos eliminados:</b> " + res.gruposEliminados + "</li>" +
+        "</ul>";
+      document.getElementById("result-summary").innerHTML = resumen;
+
+      var containerErrores = document.getElementById("result-errors");
+      containerErrores.innerHTML = "";
+      if (res.errores && res.errores.length > 0) {
+        containerErrores.style.display = "block";
+        res.errores.forEach(function(err) {
+          var li = document.createElement("li");
+          li.innerText = err;
+          containerErrores.appendChild(li);
+        });
+      } else {
+        containerErrores.style.display = "none";
+      }
+    }
+
+    function onSincronizacionError(err) {
+      document.getElementById("running").style.display = "none";
+      document.getElementById("error-message").innerText = err.message || "Error durante la operación.";
+      document.getElementById("error-state").style.display = "block";
+    }
+  </script>
+</body>
+</html>

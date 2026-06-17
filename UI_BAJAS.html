@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Actualizar BAJAS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #172554;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent-suspend: #ef4444;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    h3 {
+      margin-top: 0;
+      font-weight: 600;
+      color: var(--accent-suspend);
+    }
+
+    .banner-warning {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .banner-warning strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .banner {
+      background-color: #fef9c3;
+      border: 1px solid #fef08a;
+      color: #713f12;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 0;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--accent-suspend);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .grupo-cambios {
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .grupo-header {
+      padding: 12px 16px;
+      font-weight: 600;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .grupo-header.suspender { background-color: var(--accent-suspend); }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+
+    .item-usuario {
+      display: flex;
+      align-items: flex-start;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      transition: background 0.2s;
+    }
+
+    .item-usuario:last-child {
+      border-bottom: none;
+    }
+
+    .item-usuario:hover {
+      background-color: #fef2f2;
+    }
+
+    .chk-container {
+      margin-top: 3px;
+    }
+
+    .chk-container input {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent-suspend);
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .user-email {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    .user-dept {
+      font-size: 11px;
+      color: var(--accent-suspend);
+      margin-top: 4px;
+      background-color: #fef2f2;
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .control-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .safety-label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .txt-seguridad {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .txt-seguridad:focus {
+      border-color: var(--accent-suspend);
+    }
+
+    .btn-ejecutar {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--accent-suspend);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, opacity 0.2s;
+    }
+
+    .btn-ejecutar:hover:not(:disabled) {
+      background-color: #dc2626;
+    }
+
+    .btn-ejecutar:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: #94a3b8;
+    }
+
+    .result-card {
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 16px;
+      border-radius: 10px;
+      margin-top: 16px;
+    }
+
+    .result-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .result-list {
+      margin: 8px 0 0 0;
+      padding-left: 20px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <div id="sim-banner" class="banner" style="display: none;">
+      <span>⚠️</span>
+      <span>MODO SIMULACIÓN ACTIVO (No se aplicarán cambios reales).</span>
+    </div>
+
+    <h3>➖ Actualizar BAJAS</h3>
+    
+    <div class="banner-warning">
+      <strong>⚠️ Acción irreversible</strong>
+      Las cuentas suspendidas no podrán enviarse a papelera desde este panel.
+      Se recomienda usar la papelera de Google Admin para eliminaciones permanentes.
+    </div>
+    
+    <div id="loading" class="loading-container">
+      <div class="spinner"></div>
+      <div style="color: var(--text-muted);">Buscando bajas pendientes...</div>
+    </div>
+
+    <div id="sin-cambios" style="display: none; text-align: center; padding: 40px 0;">
+      <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
+      <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">Sin Bajas Pendientes</div>
+      <div style="color: var(--text-muted); font-size: 13px;">No hay cuentas para suspender.</div>
+    </div>
+
+    <div id="error-state" style="display: none; text-align: center; padding: 30px 16px;">
+      <div style="font-size: 48px; margin-bottom: 12px;">❌</div>
+      <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #B91C1C;">Error de Conexión</div>
+      <div id="error-message" style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px; word-break: break-word;"></div>
+      <button class="btn-ejecutar" style="background-color: var(--primary);" onclick="recargarDatos()">Reintentar</button>
+    </div>
+
+    <div id="lista-cambios" style="display: none;">
+      
+      <div id="grupo-suspender" class="grupo-cambios" style="display: none;">
+        <div class="grupo-header suspender">
+          <span>Cuentas a Suspender</span>
+          <span id="badge-suspender" class="badge">0</span>
+        </div>
+        <div id="items-suspender"></div>
+      </div>
+
+      <div class="control-panel">
+        <label class="safety-label">Para continuar, escribe CONFIRMAR:</label>
+        <input type="text" id="input-seguridad" class="txt-seguridad" placeholder="Escribe CONFIRMAR en mayúsculas" oninput="validarFormulario()">
+        
+        <button id="btn-ejecutar" class="btn-ejecutar" disabled onclick="procesarCambios()">
+          Suspender Cuentas Seleccionadas
+        </button>
+      </div>
+    </div>
+
+    <div id="running" class="loading-container" style="display: none;">
+      <div class="spinner"></div>
+      <div style="color: var(--text-muted); font-weight: 600;">Suspendiendo cuentas en Google Workspace...</div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Por favor, no cierres este panel.</div>
+    </div>
+
+    <div id="finished" class="result-card" style="display: none;">
+      <div class="result-title">Bajas Aplicadas</div>
+      <div id="result-summary"></div>
+      <ul id="result-errors" class="result-list" style="color: #dc2626; display: none;"></ul>
+      
+      <button class="btn-ejecutar" style="margin-top: 16px; background-color: var(--primary);" onclick="recargarDatos()">
+        Listo / Actualizar de nuevo
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    var datosSincronizacion = null;
+
+    document.addEventListener("DOMContentLoaded", function() {
+      recargarDatos();
+    });
+
+    function recargarDatos() {
+      document.getElementById("loading").style.display = "flex";
+      document.getElementById("lista-cambios").style.display = "none";
+      document.getElementById("sin-cambios").style.display = "none";
+      document.getElementById("error-state").style.display = "none";
+      document.getElementById("running").style.display = "none";
+      document.getElementById("finished").style.display = "none";
+      document.getElementById("input-seguridad").value = "";
+      document.getElementById("btn-ejecutar").disabled = true;
+
+      google.script.run
+        .withSuccessHandler(onDatosCargados)
+        .withFailureHandler(onDatosError)
+        .obtenerSoloBajasBridge();
+    }
+
+    function onDatosCargados(resultadoJSON) {
+      var resultado = JSON.parse(resultadoJSON);
+      document.getElementById("loading").style.display = "none";
+      
+      if (resultado.error) {
+        document.getElementById("error-message").innerText = resultado.error;
+        document.getElementById("error-state").style.display = "block";
+        return;
+      }
+
+      datosSincronizacion = resultado;
+
+      var tieneSuspender = resultado.suspender && resultado.suspender.length > 0;
+
+      if (!tieneSuspender) {
+        document.getElementById("sin-cambios").style.display = "block";
+        return;
+      }
+
+      document.getElementById("lista-cambios").style.display = "block";
+
+      var containerSuspender = document.getElementById("items-suspender");
+      containerSuspender.innerHTML = "";
+      if (tieneSuspender) {
+        document.getElementById("grupo-suspender").style.display = "block";
+        document.getElementById("badge-suspender").innerText = resultado.suspender.length;
+        
+        resultado.suspender.forEach(function(item, idx) {
+          containerSuspender.appendChild(crearItemHTML("suspender", idx, item.nombre, item.emailPropuesto, item.departamento));
+        });
+      } else {
+        document.getElementById("grupo-suspender").style.display = "none";
+      }
+
+      validarFormulario();
+    }
+
+    function onDatosError(err) {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("error-message").innerText = err.message || "Error desconocido al conectar con el servidor.";
+      document.getElementById("error-state").style.display = "block";
+    }
+
+    function crearItemHTML(tipo, index, nombre, email, dpto) {
+      var div = document.createElement("div");
+      div.className = "item-usuario";
+      
+      var chkContainer = document.createElement("div");
+      chkContainer.className = "chk-container";
+      
+      var chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.checked = true;
+      chk.id = "chk-" + tipo + "-" + index;
+      chk.setAttribute("data-tipo", tipo);
+      chk.setAttribute("data-index", index);
+      chk.onchange = validarFormulario;
+      
+      chkContainer.appendChild(chk);
+      
+      var info = document.createElement("div");
+      info.className = "user-info";
+      info.innerHTML = 
+        '<div class="user-name">' + nombre + '</div>' +
+        '<div class="user-email">' + email + '</div>' +
+        '<div class="user-dept">' + (dpto || '') + '</div>';
+        
+      div.appendChild(chkContainer);
+      div.appendChild(info);
+      
+      return div;
+    }
+
+    function validarFormulario() {
+      var chks = document.querySelectorAll("input[type='checkbox']:checked");
+      var textSeguridad = document.getElementById("input-seguridad").value;
+      var btn = document.getElementById("btn-ejecutar");
+      
+      if (chks.length > 0 && textSeguridad.trim() === "CONFIRMAR") {
+        btn.disabled = false;
+      } else {
+        btn.disabled = true;
+      }
+    }
+
+    function procesarCambios() {
+      var cambiosAAplicar = {
+        suspender: []
+      };
+
+      var chks = document.querySelectorAll("input[type='checkbox']:checked");
+      chks.forEach(function(chk) {
+        var tipo = chk.getAttribute("data-tipo");
+        var idx = parseInt(chk.getAttribute("data-index"));
+        
+        if (tipo === "suspender") {
+          cambiosAAplicar.suspender.push(datosSincronizacion.suspender[idx]);
+        }
+      });
+
+      document.getElementById("lista-cambios").style.display = "none";
+      document.getElementById("running").style.display = "flex";
+
+      google.script.run
+        .withSuccessHandler(onSincronizacionFinalizada)
+        .withFailureHandler(onSincronizacionError)
+        .aplicarSoloBajasBridge(JSON.stringify(cambiosAAplicar));
+    }
+
+    function onSincronizacionFinalizada(resultadoJSON) {
+      var res = JSON.parse(resultadoJSON);
+      document.getElementById("running").style.display = "none";
+      document.getElementById("finished").style.display = "block";
+
+      if (res.modoSimulacion) {
+        document.getElementById("sim-banner").style.display = "flex";
+      }
+
+      var resumen = 
+        "<ul>" +
+        "<li><b>Cuentas suspendidas:</b> " + res.suspendidos + "</li>" +
+        "</ul>";
+      document.getElementById("result-summary").innerHTML = resumen;
+
+      var containerErrores = document.getElementById("result-errors");
+      containerErrores.innerHTML = "";
+      if (res.errores && res.errores.length > 0) {
+        containerErrores.style.display = "block";
+        res.errores.forEach(function(err) {
+          var li = document.createElement("li");
+          li.innerText = err;
+          containerErrores.appendChild(li);
+        });
+      } else {
+        containerErrores.style.display = "none";
+      }
+    }
+
+    function onSincronizacionError(err) {
+      document.getElementById("running").style.display = "none";
+      document.getElementById("error-message").innerText = err.message || "Error durante la sincronización.";
+      document.getElementById("error-state").style.display = "block";
+    }
+  </script>
+</body>
+</html>
